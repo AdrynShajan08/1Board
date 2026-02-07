@@ -27,7 +27,7 @@ app.use('/api', apiRoutes);
 // Root route
 app.get('/', (req, res) => {
   res.json({
-    message: 'Zerodha MF Dashboard API',
+    message: 'Coin MF Dashboard API',
     version: '1.0.0',
     endpoints: {
       health: 'GET /api/health',
@@ -86,7 +86,7 @@ const startServer = async () => {
     // Start listening
     app.listen(PORT, () => {
       console.log('\n═══════════════════════════════════════════════════════');
-      console.log('  Zerodha MF Dashboard API Server');
+      console.log('  Coin MF Dashboard API Server');
       console.log('═══════════════════════════════════════════════════════');
       console.log(`Server running on: http://localhost:${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);

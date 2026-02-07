@@ -6,7 +6,6 @@ const DataFetcherJob = require('../jobs/dataFetcher');
 const router = express.Router();
 const kiteService = new KiteService();
 const analyticsService = new AnalyticsService();
-const dataFetcher = new DataFetcherJob();
 
 // Health check
 router.get('/health', (req, res) => {
@@ -238,6 +237,8 @@ router.get('/portfolio/bottom-performers', async (req, res) => {
  */
 router.post('/sync/fetch-now', async (req, res) => {
   try {
+    // Create a new instance for each request
+    const dataFetcher = new DataFetcherJob();
     const success = await dataFetcher.fetchAndStoreHoldings();
     
     if (success) {
@@ -253,6 +254,7 @@ router.post('/sync/fetch-now', async (req, res) => {
       });
     }
   } catch (error) {
+    console.error('Sync error:', error);
     res.status(500).json({ 
       success: false, 
       error: error.message 

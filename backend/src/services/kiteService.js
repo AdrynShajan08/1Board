@@ -57,34 +57,55 @@ class KiteService {
   }
 
   /**
-   * Get mutual fund holdings
-   */
-  async getMFHoldings() {
-    try {
-      const holdings = await this.kite.getMFHoldings();
-      
-      // Calculate additional fields
-      const enrichedHoldings = holdings.map(holding => {
-        const investedValue = holding.quantity * holding.average_price;
-        const currentValue = holding.quantity * holding.last_price;
-        const pnl = currentValue - investedValue;
-        const returnPercentage = ((currentValue - investedValue) / investedValue) * 100;
-        
-        return {
-          ...holding,
-          invested_value: investedValue,
-          current_value: currentValue,
-          pnl: pnl,
-          return_percentage: returnPercentage
-        };
-      });
-      
-      return enrichedHoldings;
-    } catch (error) {
-      console.error('✗ Error fetching MF holdings:', error.message);
-      throw error;
+ * Get mutual fund holdings
+ */
+async getMFHoldings() {
+  try {
+    const holdings = await this.kite.getMFHoldings();
+    
+    console.log('Raw holdings response:', holdings);
+    console.log('Holdings type:', typeof holdings);
+    console.log('Is array?', Array.isArray(holdings));
+    
+    // Check if holdings is valid
+    if (!holdings) {
+      console.log('No holdings returned');
+      return [];
     }
+    
+    if (!Array.isArray(holdings)) {
+      console.error('Holdings is not an array:', holdings);
+      return [];
+    }
+    
+    if (holdings.length === 0) {
+      console.log('Holdings array is empty');
+      return [];
+    }
+    
+    // Calculate additional fields
+    const enrichedHoldings = holdings.map(holding => {
+      const investedValue = holding.quantity * holding.average_price;
+      const currentValue = holding.quantity * holding.last_price;
+      const pnl = currentValue - investedValue;
+      const returnPercentage = ((currentValue - investedValue) / investedValue) * 100;
+      
+      return {
+        ...holding,
+        invested_value: investedValue,
+        current_value: currentValue,
+        pnl: pnl,
+        return_percentage: returnPercentage
+      };
+    });
+    
+    return enrichedHoldings;
+  } catch (error) {
+    console.error('✗ Error fetching MF holdings:', error.message);
+    console.error('Full error:', error);
+    throw error;
   }
+}
 
   /**
    * Get margins
