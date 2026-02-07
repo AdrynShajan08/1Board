@@ -1,0 +1,51 @@
+services:
+  # Backend API Server
+  - type: web
+    name: zerodha-mf-backend
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/server.js
+    rootDir: backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: KITE_API_KEY
+        sync: false
+      - key: KITE_API_SECRET
+        sync: false
+      - key: KITE_ACCESS_TOKEN
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: FETCH_SCHEDULE
+        value: "30 12 * * *"
+
+  # Scheduler Service
+  - type: web
+    name: zerodha-mf-scheduler
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/jobs/dataFetcher.js
+    rootDir: backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: KITE_API_KEY
+        sync: false
+      - key: KITE_API_SECRET
+        sync: false
+      - key: KITE_ACCESS_TOKEN
+        sync: false
+      - key: FETCH_SCHEDULE
+        value: "30 12 * * *"
+
+databases:
+  - name: zerodha-mf-db
+    databaseName: zerodha_mf_dashboard
+    user: zerodha_user
+    region: singapore
+    plan: free
